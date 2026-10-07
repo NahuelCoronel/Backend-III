@@ -1,4 +1,4 @@
-import User from '../models/user.model.js';
+import User from '../models/user.model.js ';
 
 class UsersRepository {
   // Obtener todos los usuarios (excluyendo password por seguridad)

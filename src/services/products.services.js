@@ -1,4 +1,6 @@
-import productsRepository from '../repositories/products.repository.js';
+import productsRepository from '../repositories/product.repository.js';
+import { PRODUCT_STATUS } from '../constants/index.js';
+
 
 class ProductsService {
   async getAllProducts(filter = {}) {
@@ -18,6 +20,9 @@ class ProductsService {
   async createProduct(productData) {
     const { name, description, price, stock, image } = productData;
 
+    const status = (productData.stock > 0)? PRODUCT_STATUS.AVAILABLE : PRODUCT_STATUS.OUT_OF_STOCK;
+
+
     if (!name || !description || price === undefined || stock === undefined) {
       const error = new Error('Todos los campos obligatorios deben estar presentes');
       error.statusCode = 400;
@@ -35,7 +40,8 @@ class ProductsService {
       description,
       price: Number(price),
       stock: Number(stock),
-      image
+      image,
+      status
     });
   }
 

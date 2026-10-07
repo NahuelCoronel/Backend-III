@@ -20,6 +20,11 @@ const productSchema = new mongoose.Schema({
     type: Number,
     required: [true, 'El stock es obligatorio']
   },
+  status: {
+    type: String,
+    enum: ["available", "out_of_stock"],
+    default: "available"
+  },
   image: {
     type: String,
   }

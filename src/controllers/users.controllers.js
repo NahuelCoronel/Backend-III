@@ -1,5 +1,5 @@
-import usersService from '../services/users.service.js';
-import { HTTP_STATUS } from '../utils/constants.js';
+import usersService from "../services/users.services.js";
+import { HTTP_STATUS } from '../constants/index.js';
 
 class UsersController {
   async getAll(req, res) {

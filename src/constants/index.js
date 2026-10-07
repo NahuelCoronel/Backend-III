@@ -28,8 +28,8 @@ export const HTTP_STATUS = Object.freeze({
   INTERNAL_SERVER_ERROR: 500
 });
 
-export const product = Object.freeze({
-    AVAILABLE : "AVAILABLE",
-    OUT_OF_STOCK : "OUT_OF_STOCK"
+export const PRODUCT_STATUS = Object.freeze({
+    AVAILABLE : "available",
+    OUT_OF_STOCK : "out_of_stock"
 
 })

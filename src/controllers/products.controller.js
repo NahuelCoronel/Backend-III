@@ -1,5 +1,5 @@
-import productsService from '../services/products.service.js';
-import { HTTP_STATUS } from '../utils/constants.js';
+import productsService from '../services/products.services.js';
+import { HTTP_STATUS } from '../constants/index.js';
 
 class ProductsController {
   async getAll(req, res) {

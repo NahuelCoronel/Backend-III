@@ -1,5 +1,5 @@
-import usersRepository from '../repositories/users.repository.js';
-import { ROLES } from '../utils/constants.js';
+import usersRepository from '../repositories/user.repository.js';
+import { ROLES } from '../constants/index.js';
 
 class UsersService {
   async getAllUsers(filter = {}) {
