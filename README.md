@@ -1,21 +1,43 @@
+Buenas tardes, tome lo hecho en clase pero después me pareció mejor empezar de cero. Ahora borre todo lo que hizo el profesor en clase y deje todo lo hecho por mí. Le presté atención a las correciones que me marcaron. Estoy atento a si hace falta algo más. También tengo la duda de si hay que cumplir si o si con lo hecho en clase o esta bien el camino que estoy tomando de crear todo de cero.
 
-## 🚀 Instrucciones para correr el proyecto localmente
-1. **Clonar el repositorio:**
-   ```bash
-   git clone <URL_DE_TU_REPOSITORIO>
-   cd <NOMBRE_DE_LA_CARPETA>
+# ShipNow API
+API profesional para gestión de envíos desarrollada en Node.js + Express + MongoDB, respetando la arquitectura en capas (Controller → Service → Repository).
+## 🔗 Repositorio
+[https://github.com/NahuelCoronel/Backend-III]
 
-Instalar dependencias.
+## 🚀 Tecnologías
+- Node.js
+- Express
+- MongoDB + Mongoose
+- Arquitectura por capas (Controllers, Services, Repositories)
+- Variables de entorno centralizadas
+- Manejo de errores profesional
+
+## 📦 Instalación
+Clonar el repositorio e instalar dependencias:
+```bash
+git clone https://github.com/NahuelCoronel/Backend-III.git
+cd "ruta del proyecto"
+npm install
+
+⚙️ Configuración
+Renombrar el archivo .env.example a .env y completar las variables:
 
 
-Configurar variables de entorno: Crear un archivo .env en la raíz tomando como base .env.example:
+PORT=8080
+MONGODB_URI="url de la base"
+NODE_ENV=development
 
+▶️ Ejecución
+Modo desarrollo (con nodemon):
 
-Completar los valores en .env.
+npm run dev
 
+Modo producción:
 
-Iniciar la aplicación.
+npm start
 
+El servidor quedará escuchando en http://localhost:8080.
 
 
 🏛️ Justificación de la separación entre Service y Repository

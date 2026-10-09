@@ -33,14 +33,9 @@ class UsersService {
       throw error;
     }
 
-    // Regla de negocio: no crear admins por endpoint público
-    if (role === ROLES.ADMIN) {
-      const error = new Error('No se puede registrar un usuario con rol administrador directamente');
-      error.statusCode = 403;
-      throw error;
-    }
+  
 
-    const assignedRole = role || ROLES.CUSTOMER;
+    const assignedRole = role || ROLES.USER;
 
     return await usersRepository.create({
       firstName,

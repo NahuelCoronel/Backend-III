@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import {PRODUCT_STATUS} from "../constants/index.js"
 
 const productSchema = new mongoose.Schema({
   name: {
@@ -22,8 +23,8 @@ const productSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["available", "out_of_stock"],
-    default: "available"
+    enum: Object.values(PRODUCT_STATUS),
+    default: PRODUCT_STATUS.AVAILABLE
   },
   image: {
     type: String,
