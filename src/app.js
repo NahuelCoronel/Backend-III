@@ -3,6 +3,7 @@ import cors from 'cors';
 import config from './config/env.config.js';
 import usersRouter from "./routes/users.router.js";
 import productsRouter from "./routes/products.router.js"
+import mocksRouter from "./routes/mocks.routes.js"
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/users', usersRouter);
 app.use("/api/products", productsRouter);
+app.use('/api/mocks', mocksRouter);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString(), environment: config.nodeEnv });
