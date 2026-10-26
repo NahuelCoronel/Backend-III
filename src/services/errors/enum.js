@@ -1,0 +1,7 @@
+export const EErrors = {
+  ROUTING_ERROR: 1,
+  INVALID_TYPES_ERROR: 2,
+  NOT_FOUND_ERROR: 3,
+  DATABASE_ERROR: 4,
+  BAD_REQUEST_ERROR: 5
+};

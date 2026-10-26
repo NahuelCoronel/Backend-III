@@ -1,5 +1,13 @@
 import usersRepository from '../repositories/user.repository.js';
 import { ROLES } from '../constants/index.js';
+import CustomError from './errors/customError.js';
+import { EErrors } from './errors/enum.js';
+import {
+  generateUserNotFoundErrorInfo,
+  generateUserCreationErrorInfo,
+  generateUserEmailConflictErrorInfo,
+  generateUserForbiddenRoleErrorInfo
+} from './errors/info.js';
 
 class UsersService {
   async getAllUsers(filter = {}) {
@@ -9,9 +17,12 @@ class UsersService {
   async getUserById(id) {
     const user = await usersRepository.getById(id);
     if (!user) {
-      const error = new Error('Usuario no encontrado');
-      error.statusCode = 404;
-      throw error;
+      CustomError.createError({
+        name: 'UserNotFoundError',
+        cause: generateUserNotFoundErrorInfo(id),
+        message: `No se encontró el usuario con ID: ${id}`,
+        code: EErrors.NOT_FOUND_ERROR
+      });
     }
     return user;
   }
@@ -20,20 +31,23 @@ class UsersService {
     const { firstName, lastName, email, password, role } = userData;
 
     if (!firstName || !lastName || !email || !password) {
-      const error = new Error('Nombre, apellido, email y contraseña son obligatorios');
-      error.statusCode = 400;
-      throw error;
+      CustomError.createError({
+        name: 'UserCreationError',
+        cause: generateUserCreationErrorInfo(userData),
+        message: 'Faltan campos obligatorios para registrar al usuario',
+        code: EErrors.INVALID_TYPES_ERROR
+      });
     }
 
-    // Regla de negocio: no permitir duplicados de email
     const existingUser = await usersRepository.getByEmail(email);
     if (existingUser) {
-      const error = new Error('El email ya se encuentra registrado');
-      error.statusCode = 400;
-      throw error;
+      CustomError.createError({
+        name: 'UserEmailConflictError',
+        cause: generateUserEmailConflictErrorInfo(email),
+        message: 'El email ya se encuentra registrado',
+        code: EErrors.BAD_REQUEST_ERROR
+      });
     }
-
-  
 
     const assignedRole = role || ROLES.USER;
 
@@ -41,7 +55,7 @@ class UsersService {
       firstName,
       lastName,
       email,
-      password, // En entregas posteriores aplicaremos bcrypt aquí
+      password,
       role: assignedRole
     });
   }
@@ -49,11 +63,13 @@ class UsersService {
   async updateUser(id, updateData) {
     await this.getUserById(id);
 
-    // Evitar que se modifique el rol a admin por este medio si viene en el payload
     if (updateData.role && updateData.role === ROLES.ADMIN) {
-      const error = new Error('No está permitido promover a admin desde esta operación');
-      error.statusCode = 403;
-      throw error;
+      CustomError.createError({
+        name: 'UserForbiddenError',
+        cause: generateUserForbiddenRoleErrorInfo(),
+        message: 'No está permitido promover a admin desde esta operación',
+        code: EErrors.UNAUTHORIZED_ERROR || EErrors.BAD_REQUEST_ERROR
+      });
     }
 
     return await usersRepository.update(id, updateData);

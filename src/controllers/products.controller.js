@@ -2,61 +2,51 @@ import productsService from '../services/products.services.js';
 import { HTTP_STATUS } from '../constants/index.js';
 
 class ProductsController {
-  async getAll(req, res) {
+  async getAll(req, res, next) {
     try {
       const products = await productsService.getAllProducts(req.query);
       return res.status(HTTP_STATUS.OK).json({ status: 'success', data: products });
     } catch (error) {
-      return res
-        .status(error.statusCode || HTTP_STATUS.INTERNAL_SERVER_ERROR)
-        .json({ status: 'error', message: error.message });
+      next(error);
     }
   }
 
-  async getById(req, res) {
+  async getById(req, res, next) {
     try {
       const { id } = req.params;
       const product = await productsService.getProductById(id);
       return res.status(HTTP_STATUS.OK).json({ status: 'success', data: product });
     } catch (error) {
-      return res
-        .status(error.statusCode || HTTP_STATUS.INTERNAL_SERVER_ERROR)
-        .json({ status: 'error', message: error.message });
+      next(error);
     }
   }
 
-  async create(req, res) {
+  async create(req, res, next) {
     try {
       const newProduct = await productsService.createProduct(req.body);
       return res.status(HTTP_STATUS.CREATED).json({ status: 'success', data: newProduct });
     } catch (error) {
-      return res
-        .status(error.statusCode || HTTP_STATUS.INTERNAL_SERVER_ERROR)
-        .json({ status: 'error', message: error.message });
+      next(error);
     }
   }
 
-  async update(req, res) {
+  async update(req, res, next) {
     try {
       const { id } = req.params;
       const updatedProduct = await productsService.updateProduct(id, req.body);
       return res.status(HTTP_STATUS.OK).json({ status: 'success', data: updatedProduct });
     } catch (error) {
-      return res
-        .status(error.statusCode || HTTP_STATUS.INTERNAL_SERVER_ERROR)
-        .json({ status: 'error', message: error.message });
+      next(error);
     }
   }
 
-  async delete(req, res) {
+  async delete(req, res, next) {
     try {
       const { id } = req.params;
       await productsService.deleteProduct(id);
       return res.status(HTTP_STATUS.OK).json({ status: 'success', message: 'Producto eliminado correctamente' });
     } catch (error) {
-      return res
-        .status(error.statusCode || HTTP_STATUS.INTERNAL_SERVER_ERROR)
-        .json({ status: 'error', message: error.message });
+      next(error);
     }
   }
 }

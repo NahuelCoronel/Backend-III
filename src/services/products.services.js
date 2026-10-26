@@ -1,6 +1,12 @@
 import productsRepository from '../repositories/product.repository.js';
 import { PRODUCT_STATUS } from '../constants/index.js';
-
+import CustomError from './errors/customError.js';
+import { EErrors } from './errors/enum.js';
+import {
+  generateProductNotFoundErrorInfo,
+  generateProductCreationErrorInfo,
+  generateProductNumericValidationErrorInfo
+} from './errors/info.js';
 
 class ProductsService {
   async getAllProducts(filter = {}) {
@@ -10,9 +16,12 @@ class ProductsService {
   async getProductById(id) {
     const product = await productsRepository.getById(id);
     if (!product) {
-      const error = new Error('Producto no encontrado');
-      error.statusCode = 404;
-      throw error;
+      CustomError.createError({
+        name: 'ProductNotFoundError',
+        cause: generateProductNotFoundErrorInfo(id),
+        message: `No se encontró el producto con ID: ${id}`,
+        code: EErrors.NOT_FOUND_ERROR
+      });
     }
     return product;
   }
@@ -20,20 +29,34 @@ class ProductsService {
   async createProduct(productData) {
     const { name, description, price, stock, image } = productData;
 
-    const status = (productData.stock > 0)? PRODUCT_STATUS.AVAILABLE : PRODUCT_STATUS.OUT_OF_STOCK;
-
-
     if (!name || !description || price === undefined || stock === undefined) {
-      const error = new Error('Todos los campos obligatorios deben estar presentes');
-      error.statusCode = 400;
-      throw error;
+      CustomError.createError({
+        name: 'ProductCreationError',
+        cause: generateProductCreationErrorInfo(productData),
+        message: 'Faltan campos obligatorios para registrar el producto',
+        code: EErrors.INVALID_TYPES_ERROR
+      });
     }
 
-    if (price < 0 || stock < 0) {
-      const error = new Error('El precio y el stock no pueden ser negativos');
-      error.statusCode = 400;
-      throw error;
+    if (Number(price) < 0) {
+      CustomError.createError({
+        name: 'ProductValidationError',
+        cause: generateProductNumericValidationErrorInfo('price', price),
+        message: 'El precio del producto no puede ser negativo',
+        code: EErrors.BAD_REQUEST_ERROR
+      });
     }
+
+    if (Number(stock) < 0) {
+      CustomError.createError({
+        name: 'ProductValidationError',
+        cause: generateProductNumericValidationErrorInfo('stock', stock),
+        message: 'El stock del producto no puede ser negativo',
+        code: EErrors.BAD_REQUEST_ERROR
+      });
+    }
+
+    const status = Number(stock) > 0 ? PRODUCT_STATUS.AVAILABLE : PRODUCT_STATUS.OUT_OF_STOCK;
 
     return await productsRepository.create({
       name,
@@ -46,19 +69,24 @@ class ProductsService {
   }
 
   async updateProduct(id, updateData) {
-    // Validamos primero que el producto exista
     await this.getProductById(id);
 
-    if (updateData.price !== undefined && updateData.price < 0) {
-      const error = new Error('El precio no puede ser negativo');
-      error.statusCode = 400;
-      throw error;
+    if (updateData.price !== undefined && Number(updateData.price) < 0) {
+      CustomError.createError({
+        name: 'ProductValidationError',
+        cause: generateProductNumericValidationErrorInfo('price', updateData.price),
+        message: 'El precio del producto no puede ser negativo',
+        code: EErrors.BAD_REQUEST_ERROR
+      });
     }
 
-    if (updateData.stock !== undefined && updateData.stock < 0) {
-      const error = new Error('El stock no puede ser negativo');
-      error.statusCode = 400;
-      throw error;
+    if (updateData.stock !== undefined && Number(updateData.stock) < 0) {
+      CustomError.createError({
+        name: 'ProductValidationError',
+        cause: generateProductNumericValidationErrorInfo('stock', updateData.stock),
+        message: 'El stock del producto no puede ser negativo',
+        code: EErrors.BAD_REQUEST_ERROR
+      });
     }
 
     return await productsRepository.update(id, updateData);

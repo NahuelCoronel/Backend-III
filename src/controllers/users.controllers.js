@@ -2,63 +2,54 @@ import usersService from "../services/users.services.js";
 import { HTTP_STATUS } from '../constants/index.js';
 
 class UsersController {
-  async getAll(req, res) {
+  async getAll(req, res, next) {
     try {
       const users = await usersService.getAllUsers(req.query);
       return res.status(HTTP_STATUS.OK).json({ status: 'success', data: users });
     } catch (error) {
-      return res
-        .status(error.statusCode || HTTP_STATUS.INTERNAL_SERVER_ERROR)
-        .json({ status: 'error', message: error.message });
+      next(error);
     }
   }
 
-  async getById(req, res) {
+  async getById(req, res, next) {
     try {
       const { id } = req.params;
       const user = await usersService.getUserById(id);
       return res.status(HTTP_STATUS.OK).json({ status: 'success', data: user });
     } catch (error) {
-      return res
-        .status(error.statusCode || HTTP_STATUS.INTERNAL_SERVER_ERROR)
-        .json({ status: 'error', message: error.message });
+      next(error);
     }
   }
 
-  async create(req, res) {
+  async create(req, res, next) {
     try {
       const newUser = await usersService.createUser(req.body);
       return res.status(HTTP_STATUS.CREATED).json({ status: 'success', data: newUser });
     } catch (error) {
-      return res
-        .status(error.statusCode || HTTP_STATUS.INTERNAL_SERVER_ERROR)
-        .json({ status: 'error', message: error.message });
+      next(error);
     }
   }
 
-  async update(req, res) {
+  async update(req, res, next) {
     try {
       const { id } = req.params;
       const updatedUser = await usersService.updateUser(id, req.body);
       return res.status(HTTP_STATUS.OK).json({ status: 'success', data: updatedUser });
     } catch (error) {
-      return res
-        .status(error.statusCode || HTTP_STATUS.INTERNAL_SERVER_ERROR)
-        .json({ status: 'error', message: error.message });
+      next(error);
     }
   }
 
-  async delete(req, res) {
+  async delete(req, res, next) {
     try {
       const { id } = req.params;
       await usersService.deleteUser(id);
       return res.status(HTTP_STATUS.OK).json({ status: 'success', message: 'Usuario eliminado correctamente' });
     } catch (error) {
-      return res
-        .status(error.statusCode || HTTP_STATUS.INTERNAL_SERVER_ERROR)
-        .json({ status: 'error', message: error.message });
+      next(error);
     }
   }
 }
 
 export default new UsersController();
+
