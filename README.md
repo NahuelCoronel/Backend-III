@@ -109,3 +109,43 @@ GET /api/mocks/products?qty=10 - Generar 10 productos simulados en memoria (200 
 POST /api/mocks/seed?qty=10 - Poblar la base de datos con registros relacionales (201 Created).
 
 Prueba 400 (Mocks con parámetro inválido): GET /api/mocks/users?qty=-5 o qty=abc dispara InvalidQuantityError con código 400.
+
+
+## Logging y Monitoreo con Winston
+
+Se implementó un sistema de logging estructurado y centralizado para ShipNow API utilizando Winston y winston-daily-rotate-file, reemplazando el uso de console.log y conectándose con la arquitectura en capas y el middleware global de errores.
+
+### 1. Niveles de log configurados
+El sistema cuenta con una escala de prioridades personalizada y colores en consola:
+- fatal (prioridad 0): Fallas críticas que comprometen la continuidad del servicio o errores internos no controlados.
+- error (prioridad 1): Errores de base de datos o excepciones operativas graves.
+- warning (prioridad 2): Validaciones fallidas de datos y rutas no encontradas (404).
+- info (prioridad 3): Registro del inicio del servidor, conexión a base de datos y eventos generales del ciclo de vida.
+- http (prioridad 4): Registro de cada petición HTTP entrante con método, ruta y hora.
+- debug (prioridad 5): Diagnóstico detallado para desarrollo.
+
+### 2. Comportamiento según el entorno
+El logger detecta la variable NODE_ENV:
+- Entorno de Desarrollo (NODE_ENV=development): Muestra por consola todos los niveles (desde debug hasta fatal) con formato legible y colores.
+- Entorno de Producción (NODE_ENV=production): Muestra por consola a partir del nivel info. Persiste automáticamente los niveles error y fatal en archivos rotativos dentro de la carpeta /logs.
+
+### 3. Persistencia y rotación de archivos
+Para el entorno productivo se implementó un transporte DailyRotateFile:
+- Directorio de almacenamiento: /logs
+- Patrón de archivo: errors-YYYY-MM-DD.log
+- Tamaño máximo por archivo: 20 MB
+- Retención máxima: 14 días
+
+### 4. Endpoint de prueba
+Para verificar el funcionamiento del logger y sus diferentes niveles, se dispone del siguiente endpoint:
+- Método: GET
+- Ruta: /api/loggerTest
+- Respuesta: Dispara logs de prueba en los seis niveles configurados y responde un JSON de confirmación.
+
+### 5. Cómo probar los entornos
+1. En el archivo .env, definir:
+   NODE_ENV=development
+2. Iniciar el servidor y realizar una petición GET a http://localhost:8080/api/loggerTest para visualizar todos los niveles coloreados en la consola.
+3. Modificar en el .env:
+   NODE_ENV=production
+4. Reiniciar el servidor y repetir la petición para comprobar que en consola solo se emiten mensajes desde info y que se genera el archivo en /logs con los registros de error y fatal.
