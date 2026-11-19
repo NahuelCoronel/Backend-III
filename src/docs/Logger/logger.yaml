@@ -1,0 +1,20 @@
+paths:
+  /api/loggerTest:
+    get:
+      summary: Probar los niveles de log de Winston
+      description: Endpoint técnico de diagnóstico para emitir registros en niveles debug, http, info, warning, error y fatal.
+      tags: [Logger]
+      responses:
+        200:
+          description: Prueba de logs ejecutada correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Logs probados con éxito

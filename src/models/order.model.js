@@ -1,24 +1,46 @@
 import mongoose from 'mongoose';
-import { ORDER_STATUS, ORDER_PRIORITY } from '../constants/index.js';
+
+const orderItemSchema = new mongoose.Schema({
+  product: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Product',
+    required: true
+  },
+  quantity: {
+    type: Number,
+    required: true,
+    min: 1
+  },
+  price: {
+    type: Number,
+    required: true,
+    min: 0
+  }
+}, { _id: false });
 
 const orderSchema = new mongoose.Schema({
-  orderNumber: { type: String, required: true, unique: true },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: [true, 'El usuario es obligatorio']
   },
-  totalAmount: { type: Number, required: true },
+  items: {
+    type: [orderItemSchema],
+    required: [true, 'Los ítems son obligatorios']
+  },
+  total: {
+    type: Number,
+    required: true,
+    min: 0
+  },
   status: {
     type: String,
-    enum: Object.values(ORDER_STATUS),
-    default: ORDER_STATUS.PENDING
-  },
-  priority: {
-    type: String,
-    enum: Object.values(ORDER_PRIORITY),
-    default: ORDER_PRIORITY.MEDIUM
+    enum: ['pending', 'confirmed', 'delivered', 'cancelled'],
+    default: 'pending'
   }
-}, { timestamps: true });
+}, {
+  timestamps: true
+});
 
-export default mongoose.model('Order', orderSchema);
+const Order = mongoose.model('Order', orderSchema);
+export default Order;

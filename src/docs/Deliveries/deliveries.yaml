@@ -1,0 +1,148 @@
+components:
+  schemas:
+    DeliveryAddress:
+      type: object
+      required:
+        - street
+        - city
+        - zipCode
+      properties:
+        street:
+          type: string
+          example: "Av. Corrientes 1234"
+        city:
+          type: string
+          example: "CABA"
+        zipCode:
+          type: string
+          example: "1043"
+
+    Delivery:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "652f1a2b3c4d5e6f7a8b9c10"
+        order:
+          type: string
+          example: "652f1a2b3c4d5e6f7a8b9c0e"
+        trackingCode:
+          type: string
+          example: "TRK-987654321"
+        address:
+          $ref: '#/components/schemas/DeliveryAddress'
+        status:
+          type: string
+          enum: [pending, in_transit, delivered]
+          example: in_transit
+        createdAt:
+          type: string
+          format: date-time
+
+    DeliveryInput:
+      type: object
+      required:
+        - order
+        - trackingCode
+        - address
+      properties:
+        order:
+          type: string
+          example: "652f1a2b3c4d5e6f7a8b9c0e"
+        trackingCode:
+          type: string
+          example: "TRK-987654321"
+        address:
+          $ref: '#/components/schemas/DeliveryAddress'
+
+paths:
+  /api/deliveries:
+    get:
+      summary: Obtener todas las entregas logísticas
+      tags: [Deliveries]
+      responses:
+        200:
+          description: Lista de entregas obtenida con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Delivery'
+        500:
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      summary: Registrar una nueva entrega
+      tags: [Deliveries]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeliveryInput'
+      responses:
+        201:
+          description: Entrega registrada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    $ref: '#/components/schemas/Delivery'
+        400:
+          description: Datos inválidos o tracking code duplicado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/deliveries/{id}:
+    get:
+      summary: Obtener entrega por ID
+      tags: [Deliveries]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID de MongoDB de la entrega
+      responses:
+        200:
+          description: Entrega encontrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    $ref: '#/components/schemas/Delivery'
+        400:
+          description: Formato de ID inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        404:
+          description: Entrega no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'

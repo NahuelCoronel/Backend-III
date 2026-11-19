@@ -1,0 +1,28 @@
+components:
+  schemas:
+    SuccessResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        data:
+          type: object
+          description: Datos de la entidad devuelta
+
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        error:
+          type: string
+          example: InvalidInputError
+        message:
+          type: string
+          example: El parámetro proporcionado no es válido o faltan campos obligatorios
+        cause:
+          type: string
+          nullable: true
+          example: null

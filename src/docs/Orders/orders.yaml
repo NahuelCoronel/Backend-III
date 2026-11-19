@@ -1,0 +1,155 @@
+components:
+  schemas:
+    OrderItem:
+      type: object
+      required:
+        - product
+        - quantity
+        - price
+      properties:
+        product:
+          type: string
+          description: ID del producto asociado
+          example: "652f1a2b3c4d5e6f7a8b9c0f"
+        quantity:
+          type: integer
+          minimum: 1
+          example: 2
+        price:
+          type: number
+          minimum: 0
+          example: 1500
+
+    Order:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "652f1a2b3c4d5e6f7a8b9c0e"
+        user:
+          type: string
+          example: "652f1a2b3c4d5e6f7a8b9c0d"
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+        total:
+          type: number
+          example: 3000
+        status:
+          type: string
+          enum: [pending, confirmed, delivered, cancelled]
+          example: pending
+        createdAt:
+          type: string
+          format: date-time
+
+    OrderInput:
+      type: object
+      required:
+        - user
+        - items
+        - total
+      properties:
+        user:
+          type: string
+          example: "652f1a2b3c4d5e6f7a8b9c0d"
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+        total:
+          type: number
+          example: 3000
+
+paths:
+  /api/orders:
+    get:
+      summary: Obtener todas las órdenes
+      tags: [Orders]
+      responses:
+        200:
+          description: Lista de órdenes obtenida con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Order'
+        500:
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      summary: Crear una nueva orden
+      tags: [Orders]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderInput'
+      responses:
+        201:
+          description: Orden creada con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    $ref: '#/components/schemas/Order'
+        400:
+          description: Datos inválidos o faltan campos obligatorios
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/orders/{id}:
+    get:
+      summary: Obtener orden por ID
+      tags: [Orders]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID de MongoDB de la orden
+      responses:
+        200:
+          description: Orden encontrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    $ref: '#/components/schemas/Order'
+        400:
+          description: Formato de ID inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        404:
+          description: Orden no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'

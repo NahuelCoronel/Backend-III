@@ -149,3 +149,27 @@ Para verificar el funcionamiento del logger y sus diferentes niveles, se dispone
 3. Modificar en el .env:
    NODE_ENV=production
 4. Reiniciar el servidor y repetir la petición para comprobar que en consola solo se emiten mensajes desde info y que se genera el archivo en /logs con los registros de error y fatal.
+
+
+## Documentación de la API con Swagger
+
+La API cuenta con documentación interactiva generada con OpenAPI 3.0 y Swagger UI.
+
+### Acceso
+Una vez iniciado el servidor, podés acceder a la interfaz interactiva desde tu navegador en:
+- `http://localhost:8080/api/docs`
+
+### Módulos documentados
+La documentación se organiza bajo 5 tags principales:
+1. **Users:** Operaciones CRUD sobre usuarios (`/api/users`).
+2. **Orders:** Creación y consulta de pedidos (`/api/orders`), validando items y montos.
+3. **Deliveries:** Registro y seguimiento logístico (`/api/deliveries`).
+4. **Mocks:** Generación en memoria (`GET /api/mocks/users`, `GET /api/mocks/products`) y persistencia con carga masiva (`POST /api/mocks/seed`).
+5. **Logger:** Endpoint de diagnóstico técnico (`GET /api/loggerTest`) para validar los niveles de registro de Winston en consola y archivos rotativos.
+
+### Cómo probar los endpoints
+1. Levantar el entorno con `npm run dev` (o `npm start`).
+2. Ingresar a `http://localhost:8080/api/docs`.
+3. Desplegar cualquier endpoint y presionar el botón **"Try it out"**.
+4. Completar los parámetros o el body según el schema indicado y presionar **"Execute"**.
+

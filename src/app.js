@@ -2,11 +2,12 @@ import express from 'express';
 import cors from 'cors';
 import config from './config/env.config.js';
 import usersRouter from "./routes/users.router.js";
-import productsRouter from "./routes/products.router.js"
-import mocksRouter from "./routes/mocks.routes.js"
+import productsRouter from "./routes/products.router.js";
+import mocksRouter from "./routes/mocks.routes.js";
 import loggerTestRouter from "./routes/loggerTest.routes.js";
 import { errorHandler } from './middlewares/error.middleware.js';
 import { addLogger } from "./middlewares/logger.middleware.js";
+import { serveSwagger, setupSwagger } from './config/swagger.config.js';
 
 
 const app = express();
@@ -14,25 +15,26 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(addLogger)
+app.use(addLogger);
+
+app.use('/api/docs', serveSwagger, setupSwagger);
 
 app.use('/api/users', usersRouter);
 app.use("/api/products", productsRouter);
 app.use('/api/mocks', mocksRouter);
-app.use("/api", loggerTestRouter)
+app.use("/api", loggerTestRouter);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString(), environment: config.nodeEnv });
 });
 
-app.use(errorHandler)
-
 
 app.use((req, res) => {
-  res.status(404).json({ status: 'error', message: 'Ruta no encontrada' });
+  req.logger.warning(`Ruta no encontrada (404) - ${req.method} ${req.originalUrl}`);
+  res.status(404).json({ status: 'error', message: `Ruta ${req.originalUrl} no encontrada` });
 });
 
 
+app.use(errorHandler);
+
 export default app;
- //server.js --> se encarga inicilizar todas las partes del proyecto --> app - mongoose
- // app.js --> configuracion de app
