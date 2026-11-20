@@ -1,4 +1,4 @@
-import ordersService from '../services/orders.service.js';
+import ordersService from '../services/orders.services.js';
 import { HTTP_STATUS } from '../constants/index.js';
 
 class OrdersController {

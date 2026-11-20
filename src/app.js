@@ -5,6 +5,8 @@ import usersRouter from "./routes/users.router.js";
 import productsRouter from "./routes/products.router.js";
 import mocksRouter from "./routes/mocks.routes.js";
 import loggerTestRouter from "./routes/loggerTest.routes.js";
+import ordersRouter from "./routes/orders.router.js"
+import deliveriesRouter from "./routes/deliveries.router.js"
 import { errorHandler } from './middlewares/error.middleware.js';
 import { addLogger } from "./middlewares/logger.middleware.js";
 import { serveSwagger, setupSwagger } from './config/swagger.config.js';
@@ -21,6 +23,8 @@ app.use('/api/docs', serveSwagger, setupSwagger);
 
 app.use('/api/users', usersRouter);
 app.use("/api/products", productsRouter);
+app.use("/api/orders", ordersRouter);
+app.use("/api/deliveries", deliveriesRouter)
 app.use('/api/mocks', mocksRouter);
 app.use("/api", loggerTestRouter);
 

@@ -1,4 +1,4 @@
-import deliveriesService from '../services/deliveries.service.js';
+import deliveriesService from '../services/deliveries.services.js';
 import { HTTP_STATUS } from '../constants/index.js';
 
 class DeliveriesController {

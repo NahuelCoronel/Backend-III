@@ -100,6 +100,7 @@ class MockService {
         insertedDeliveries: insertedDeliveries.length
       };
     } catch (dbError) {
+
       if (dbError.code && Object.values(EErrors).includes(dbError.code)) {
         throw dbError;
       }
@@ -111,6 +112,7 @@ class MockService {
         code: EErrors.DATABASE_ERROR
       });
     }
+
   }
 }
 

@@ -173,3 +173,39 @@ La documentación se organiza bajo 5 tags principales:
 3. Desplegar cualquier endpoint y presionar el botón **"Try it out"**.
 4. Completar los parámetros o el body según el schema indicado y presionar **"Execute"**.
 
+
+## 🧪 Testing y Validación Funcional
+
+El proyecto cuenta con una suite completa de pruebas funcionales automatizadas sobre la API REST.
+
+### Herramientas utilizadas
+- **Mocha**: Test runner y organización de suites.
+- **Chai**: Librería de aserciones (`expect`).
+- **Supertest**: Cliente HTTP para tests de integración sobre endpoints.
+
+### Módulos testeados
+1. **Documentación Swagger (`/api/docs`)**:
+   - Disponibilidad y renderizado de la UI de Swagger (código `200` o redirección).
+   - Manejo de rutas inexistentes (`404`).
+2. **Logger y Diagnóstico (`/api/loggerTest`)**:
+   - Verificación de niveles de logs (`DEBUG`, `HTTP`, `INFO`, `WARNING`, `ERROR`, `FATAL`).
+3. **Mocks y Seeding (`/api/mocks`)**:
+   - Generación de usuarios y productos simulados en memoria (`200`).
+   - Validación y manejo de errores con `qty` inválido (`400`).
+   - Persistencia de datos mockeados en base de datos (`201`).
+4. **Órdenes (`/api/orders`)**:
+   - Listado de órdenes (`200`).
+   - Creación exitosa de órdenes (`201`).
+   - Validación de esquema y campos obligatorios (`400`).
+   - Búsqueda de órdenes inexistentes (`404`).
+5. **Usuarios (`/api/users`)**:
+   - Listado de usuarios (`200`).
+   - Registro y creación de usuario (`201`).
+   - Validación ante datos incompletos (`400`).
+   - Manejo de usuario no encontrado (`404`).
+
+### Ejecución de los tests
+Para correr la suite completa de pruebas:
+
+```bash
+npm test
