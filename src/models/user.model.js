@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { ROLES } from '../constants/index.js';
-
+import {documentSubSchema} from "./document.model.js"
+ 
 const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
@@ -29,12 +30,7 @@ const userSchema = new mongoose.Schema({
     default: ROLES.USER
   },
   documents: {
-    type: [
-      {
-        name: { type: String },
-        reference: { type: String }
-      }
-    ],
+    type: [documentSubSchema],
     default: []
   }
 }, {

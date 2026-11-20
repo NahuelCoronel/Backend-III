@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { documentSubSchema } from './document.model.js';
 
 const orderItemSchema = new mongoose.Schema({
   product: {
@@ -37,6 +38,10 @@ const orderSchema = new mongoose.Schema({
     type: String,
     enum: ['pending', 'confirmed', 'delivered', 'cancelled'],
     default: 'pending'
+  },
+  deliveryReceipt: {
+    type: documentSubSchema,
+    default: null
   }
 }, {
   timestamps: true

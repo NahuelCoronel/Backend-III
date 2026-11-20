@@ -209,3 +209,41 @@ Para correr la suite completa de pruebas:
 
 ```bash
 npm test
+
+
+## Módulo 7: Carga de Archivos, Documentos y Comprobantes (Multer)
+
+### 📌 Nuevos Endpoints
+
+#### 1. Carga de Documentos de Usuario
+* **Método:** `POST`
+* **Ruta:** `/api/users/:uid/documents`
+* **Content-Type:** `multipart/form-data`
+* **Campos del Formulario:**
+  * `documents`: Archivo a subir (PDF, imágenes, etc.).
+  * `documentType` *(opcional / requerido según validación)*: Tipo de documento (`identification`, `address_proof`, `account_statement`, `profile`, `product`).
+* **Respuesta Exitosa (200):** Devuelve el usuario con el array de metadatos de documentos actualizado.
+
+#### 2. Carga de Comprobante de Entrega en Órdenes
+* **Método:** `POST`
+* **Ruta:** `/api/orders/:oid/receipt`
+* **Content-Type:** `multipart/form-data`
+* **Campos del Formulario:**
+  * `receipt`: Archivo comprobante de la orden.
+* **Respuesta Exitosa (200):** Devuelve la orden con los metadatos del comprobante vinculados.
+
+---
+
+### 📂 Almacenamiento y Metadatos
+* **Multer Centralizado:** Configuración desacoplada en middleware (`src/middlewares/multer.middleware.js` o `src/config/multer.js`), gestionando extensiones permitidas, límites de tamaño y nombres únicos con timestamp.
+* **Carpetas de destino:** `uploads/documents/` y `uploads/receipts/` (ignoradas en `.gitignore`).
+* **Persistencia en MongoDB:** Se almacenan únicamente metadatos (`originalName`, `filename`, `path`, `mimetype`, `size`, `documentType`, `uploadedAt`), manteniendo la base ligera.
+
+---
+
+### 🧪 Ejecución de Pruebas Funcionales
+Para ejecutar la suite completa de tests funcionales (Mocha, Supertest y Chai):
+
+```bash
+npm test
+

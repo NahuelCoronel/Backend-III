@@ -19,6 +19,27 @@ class OrdersService {
   async createOrder(data) {
     return await Order.create(data);
   }
+
+    // src/services/orders.services.js
+  async setDeliveryReceipt(oid, receiptData) {
+    // Usar findByIdAndUpdate en lugar de Order.update
+    const updatedOrder = await Order.findByIdAndUpdate(
+      oid,
+      { deliveryReceipt: receiptData },
+      { new: true }
+    );
+
+    if (!updatedOrder) {
+      const error = new Error(`Orden con ID ${oid} no encontrada`);
+      error.name = 'NotFoundError';
+      error.code = EErrors.NOT_FOUND_ERROR;
+      throw error;
+    }
+
+  return updatedOrder;
+}
+
+
 }
 
 export default new OrdersService();

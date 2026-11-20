@@ -20,6 +20,31 @@ components:
           minimum: 0
           example: 1500
 
+    DeliveryReceipt:
+      type: object
+      properties:
+        originalName:
+          type: string
+          example: "comprobante-entrega.pdf"
+        filename:
+          type: string
+          example: "1710892300000-comprobante-entrega.pdf"
+        path:
+          type: string
+          example: "uploads/documents/1710892300000-comprobante-entrega.pdf"
+        mimetype:
+          type: string
+          example: "application/pdf"
+        size:
+          type: integer
+          example: 524288
+        documentType:
+          type: string
+          example: "delivery_receipt"
+        uploadedAt:
+          type: string
+          format: date-time
+
     Order:
       type: object
       properties:
@@ -40,6 +65,8 @@ components:
           type: string
           enum: [pending, confirmed, delivered, cancelled]
           example: pending
+        deliveryReceipt:
+          $ref: '#/components/schemas/DeliveryReceipt'
         createdAt:
           type: string
           format: date-time
@@ -153,3 +180,57 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+
+  /api/orders/{oid}/receipt:
+    post:
+      summary: Registra el comprobante de entrega de una orden
+      tags: [Orders]
+      parameters:
+        - in: path
+          name: oid
+          required: true
+          schema:
+            type: string
+          description: ID de MongoDB de la orden
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - receipt
+              properties:
+                receipt:
+                  type: string
+                  format: binary
+                  description: Archivo del comprobante de entrega
+      responses:
+        200:
+          description: Comprobante de entrega registrado con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Comprobante de entrega registrado con éxito
+                  payload:
+                    $ref: '#/components/schemas/DeliveryReceipt'
+        400:
+          description: No se envió el comprobante o formato inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        404:
+          description: Orden no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+

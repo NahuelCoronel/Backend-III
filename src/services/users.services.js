@@ -79,6 +79,16 @@ class UsersService {
     await this.getUserById(id);
     return await usersRepository.delete(id);
   }
+
+  async addDocuments(id, documentsMetadata) {
+    const user = await this.getUserById(id);
+
+    // Si tu usersRepository maneja actualización directa o el documento de Mongoose:
+    const updatedDocuments = [...(user.documents || []), ...documentsMetadata];
+    
+    return await usersRepository.update(id, { documents: updatedDocuments });
+  }
+
 }
 
 export default new UsersService();

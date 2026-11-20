@@ -39,3 +39,20 @@ export const DELIVERY_STATUS = Object.freeze({
   COMPLETED: 'completado',
   FAILED: 'fallido'
 });
+
+// Tipos de documentos permitidos para usuarios / operaciones
+export const DOCUMENT_TYPES = {
+  IDENTIFICATION: 'identification',
+  DRIVERS_LICENSE: 'drivers_license',
+  PROOF_OF_ADDRESS: 'proof_of_address',
+  DELIVERY_RECEIPT: 'delivery_receipt'
+};
+
+// Sumar a tu enum o diccionario EErrors si no los tenés:
+export const EErrors = {
+  // ... los que ya tenías (ROUTING_ERROR, INVALID_TYPES_ERROR, DATABASE_ERROR, etc.)
+  FILE_REQUIRED_ERROR: 'FILE_REQUIRED_ERROR',
+  INVALID_FILE_TYPE_ERROR: 'INVALID_FILE_TYPE_ERROR',
+  FILE_SIZE_LIMIT_ERROR: 'FILE_SIZE_LIMIT_ERROR',
+  INVALID_DOCUMENT_TYPE_ERROR: 'INVALID_DOCUMENT_TYPE_ERROR'
+};

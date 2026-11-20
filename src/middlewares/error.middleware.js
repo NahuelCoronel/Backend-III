@@ -1,10 +1,11 @@
+import multer from 'multer';
 import { EErrors } from '../services/errors/enum.js';
 import { logger as defaultLogger } from "../utils/logger.js";
 
 export const errorHandler = (error, req, res, next) => {
   const log = req?.logger || defaultLogger;
 
-  
+  // 1. Errores de casteo de ID de Mongoose
   if (error.name === 'CastError') {
     log.warning(`[INVALID_ID] Formato de ID inválido: "${error.value}" para el campo "${error.path}"`);
     return res.status(400).json({
@@ -26,7 +27,36 @@ export const errorHandler = (error, req, res, next) => {
     });
   }
 
-  
+  // 3. Errores propios de Multer (límite de tamaño, campos inesperados, etc.)
+  if (error instanceof multer.MulterError) {
+    let message = 'Error en la carga del archivo';
+    if (error.code === 'LIMIT_FILE_SIZE') {
+      message = 'El archivo supera el tamaño máximo permitido (5 MB)';
+    } else if (error.code === 'LIMIT_UNEXPECTED_FILE') {
+      message = `Campo de archivo inesperado: '${error.field}'`;
+    }
+
+    log.warning(`[MULTER_ERROR] ${error.code}: ${message}`);
+    return res.status(400).json({
+      status: "error",
+      error: "MulterError",
+      message,
+      cause: error.message,
+    });
+  }
+
+  // 4. Error de tipo de archivo no permitido (lanzado desde el fileFilter de Multer)
+  if (error.name === 'InvalidFileTypeError' || error.message?.includes('Tipo de archivo no permitido')) {
+    log.warning(`[INVALID_FILE_TYPE] ${error.message}`);
+    return res.status(400).json({
+      status: "error",
+      error: "InvalidFileTypeError",
+      message: error.message || "Formato de archivo no permitido. Solo se aceptan PDF, JPEG y PNG.",
+      cause: error.cause || null,
+    });
+  }
+
+  // 5. Manejo según el enum de errores de la aplicación
   switch (error.code) {
     case EErrors.INVALID_TYPES_ERROR:
     case EErrors.BAD_REQUEST_ERROR:
@@ -58,7 +88,6 @@ export const errorHandler = (error, req, res, next) => {
       });
 
     default:
-      
       log.error(`[INTERNAL_ERROR] ${error.name || "Error"}: ${error.message} - Stack: ${error.stack}`);
       return res.status(500).json({
         status: "error",
@@ -68,6 +97,3 @@ export const errorHandler = (error, req, res, next) => {
       });
   }
 };
-
-
-

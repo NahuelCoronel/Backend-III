@@ -1,5 +1,30 @@
 components:
   schemas:
+    UserDocument:
+      type: object
+      properties:
+        originalName:
+          type: string
+          example: "dni-frente.pdf"
+        filename:
+          type: string
+          example: "1710892300000-dni-frente.pdf"
+        path:
+          type: string
+          example: "uploads/documents/1710892300000-dni-frente.pdf"
+        mimetype:
+          type: string
+          example: "application/pdf"
+        size:
+          type: integer
+          example: 1048576
+        documentType:
+          type: string
+          example: "identification"
+        uploadedAt:
+          type: string
+          format: date-time
+
     User:
       type: object
       properties:
@@ -18,6 +43,10 @@ components:
         role:
           type: string
           example: "user"
+        documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserDocument'
         createdAt:
           type: string
           format: date-time
@@ -214,3 +243,64 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+
+  /api/users/{uid}/documents:
+    post:
+      summary: Sube documentos asociados a un usuario
+      tags: [Users]
+      parameters:
+        - in: path
+          name: uid
+          required: true
+          schema:
+            type: string
+          description: ID de MongoDB del usuario
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                documentType:
+                  type: string
+                  description: Tipo de documento
+                  example: identification
+                documents:
+                  type: array
+                  description: Archivos a subir
+                  items:
+                    type: string
+                    format: binary
+            responses:
+        200:
+          description: Documentos subidos y registrados con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Documentos subidos y registrados con éxito
+                  payload:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserDocument'
+        400:
+          description: No se enviaron archivos o datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        404:
+          description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+

@@ -44,3 +44,16 @@ export const generateUserEmailConflictErrorInfo = (email) => {
 export const generateUserForbiddenRoleErrorInfo = () => {
   return 'No posee los privilegios necesarios para autoasignar o promover al rol ADMIN mediante esta operación.';
 };
+
+
+export const generateFileRequiredErrorInfo = (fieldName = 'file') => {
+  return `No se recibió ningún archivo en la petición. Se esperaba el campo '${fieldName}'.`;
+};
+
+export const generateInvalidFileTypeErrorInfo = (receivedType, allowedTypes) => {
+  return `El tipo de archivo recibido (${receivedType}) no está permitido. Tipos aceptados: ${allowedTypes.join(', ')}.`;
+};
+
+export const generateInvalidDocumentTypeErrorInfo = (receivedType, allowedTypes) => {
+  return `El tipo de documento '${receivedType}' es inválido. Tipos permitidos: ${allowedTypes.join(', ')}.`;
+};
