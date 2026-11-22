@@ -29,8 +29,14 @@ app.use('/api/mocks', mocksRouter);
 app.use("/api", loggerTestRouter);
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString(), environment: config.nodeEnv });
+  res.status(200).json({
+    status: 'ok',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+    environment: config.nodeEnv || process.env.NODE_ENV || 'development'
+  });
 });
+
 
 
 app.use((req, res) => {

@@ -2,9 +2,19 @@ import Delivery from '../models/delivery.model.js';
 import { EErrors } from './errors/enum.js';
 
 class DeliveriesService {
-  async getAllDeliveries() {
-    return await Delivery.find().populate('order');
+  
+  async getAllDeliveries({ limit = 20, page = 1 } = {}) {
+    const parsedLimit = Math.max(1, Number(limit) || 10);
+    const parsedPage = Math.max(1, Number(page) || 1);
+    const skip = (parsedPage - 1) * parsedLimit;
+
+    return await Delivery.find()
+      .skip(skip)
+      .limit(parsedLimit)
+      .populate('order');
   }
+
+  
 
   async getDeliveryById(id) {
     const delivery = await Delivery.findById(id).populate('order');

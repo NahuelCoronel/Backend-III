@@ -247,3 +247,42 @@ Para ejecutar la suite completa de tests funcionales (Mocha, Supertest y Chai):
 ```bash
 npm test
 
+ShipNow API - Performance, Escalabilidad y Docker (Módulo 8)
+Variables de Entorno
+Crear un archivo .env en la raíz del proyecto con la siguiente configuración:
+
+PORT=8080 MONGODB_URI=mongodb://localhost:27017/shipnow NODE_ENV=development
+
+Ejecución Local y Pruebas
+Instalación de dependencias: npm install
+
+Ejecutar en modo desarrollo: npm run dev
+
+Ejecutar en modo producción: npm start
+
+Ejecutar la suite de tests funcionales: npm test
+
+Documentación Swagger UI: http://localhost:8080/api/docs
+
+Endpoint de Health Check: GET http://localhost:8080/api/health Devuelve estado del servidor (status), uptime, timestamp y entorno de ejecución (environment).
+
+Despliegue con Docker
+Construir la imagen de Docker: docker build -t shipnow-api .
+
+Ejecutar el contenedor: docker run -d -p 8080:8080 --name shipnow-container --env-file .env shipnow-api
+
+Puerto expuesto: 8080
+Health check en contenedor: http://localhost:8080/api/health
+Seguridad, Performance y Exclusiones
+Límites de listados y paginación: Las consultas de usuarios, pedidos, productos y entregas cuentan con límites y paginación por defecto (limit=20, page=1) para prevenir sobrecarga de memoria en el servidor.
+Límite de subida de archivos: Multer restringe el tamaño máximo a 5 MB por archivo.
+Archivos no versionados (.gitignore y .dockerignore):
+node_modules/
+.env
+uploads/ (los archivos subidos se gestionan en runtime o mediante volúmenes)
+logs/ (los registros de Winston se generan dinámicamente y no se versionan)
+Archivos temporales y de tests en la imagen productiva.
+Criterio de Endpoints Internos por Entorno
+Swagger (/api/docs): Habilitado en desarrollo y testing; en producción cerrada se restringe o protege mediante autenticación.
+Logger Test (/api/loggerTest): Endpoint de diagnóstico técnico de Winston; disponible para desarrollo o administradores.
+Mocks (/api/mocks): Habilitado únicamente para generar datos de prueba en entornos locales o de testing.

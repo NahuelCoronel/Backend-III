@@ -9,8 +9,8 @@ import {
 } from './errors/info.js';
 
 class ProductsService {
-  async getAllProducts(filter = {}) {
-    return await productsRepository.getAll(filter);
+  async getAllProducts(filter = {}, options = {}) {
+    return await productsRepository.getAll(filter, options);
   }
 
   async getProductById(id) {

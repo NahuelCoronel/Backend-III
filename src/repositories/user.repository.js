@@ -1,10 +1,18 @@
 import User from '../models/user.model.js ';
 
 class UsersRepository {
-  // Obtener todos los usuarios (excluyendo password por seguridad)
-  async getAll(filter = {}) {
-    return await User.find(filter).select('-password');
+  // Obtener usuarios con filtros, paginación y límite por defecto
+  async getAll(filter = {}, { limit = 20, page = 1 } = {}) {
+    const parsedLimit = Math.max(1, Number(limit) || 20);
+    const parsedPage = Math.max(1, Number(page) || 1);
+    const skip = (parsedPage - 1) * parsedLimit;
+
+    return await User.find(filter)
+      .select('-password')
+      .skip(skip)
+      .limit(parsedLimit);
   }
+
 
   // Buscar usuario por ID (excluyendo password)
   async getById(id) {

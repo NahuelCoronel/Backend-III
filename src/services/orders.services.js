@@ -2,9 +2,18 @@ import Order from '../models/order.model.js';
 import { EErrors } from './errors/enum.js';
 
 class OrdersService {
-  async getAllOrders() {
-    return await Order.find().populate('user', 'firstName lastName email');
+  async getAllOrders({ limit = 20, page = 1 } = {}) {
+    const parsedLimit = Math.max(1, Number(limit) || 10);
+    const parsedPage = Math.max(1, Number(page) || 1);
+    const skip = (parsedPage - 1) * parsedLimit;
+
+    return await Order.find()
+      .skip(skip)
+      .limit(parsedLimit)
+      .populate('user', 'firstName lastName email');
   }
+  
+
 
   async getOrderById(id) {
     const order = await Order.findById(id).populate('user', 'firstName lastName email');

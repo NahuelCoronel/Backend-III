@@ -10,7 +10,7 @@ import {
 } from './errors/info.js';
 
 class UsersService {
-  async getAllUsers(filter = {}) {
+  async getAllUsers(filter = {}, options ={}) {
     return await usersRepository.getAll(filter);
   }
 
